@@ -31,8 +31,14 @@ def build_cs():
         cs[c] = f"'{c}'"
     expand()
 
+    # 'strstr' === '())())'^'[][[]['
+    p_strstr = "'())())'^'[][[]['"
+
+    # 'sqrt' === '(,))'^'[][]'
+    p_sqrt = "'(,))'^'[][]'"
+
     # False === ('strstr')('.',',')
-    p_false = "(" + stringfor("strstr") + ")('.',',')"
+    p_false = "(" + p_strstr + ")('.',',')"
 
     # 'k' === ((false^false).'.')^'['
     cs["k"] = "((" + p_false + "^" + p_false + ").'.')^'['"
@@ -41,7 +47,7 @@ def build_cs():
     # '9' === (('sqrt')('5').'.')['12']
     cs["9"] = (
         "(("
-        + stringfor("sqrt")
+        + p_sqrt
         + ")("
         + stringfor("5")
         + ").'.')["
